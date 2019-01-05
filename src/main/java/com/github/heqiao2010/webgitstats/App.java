@@ -1,4 +1,4 @@
-package com.heqiao2010;
+package com.github.heqiao2010.webgitstats;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  */
 @EnableAutoConfiguration
-@ComponentScan("com.heqiao2010")
+@ComponentScan("com.github.heqiao2010.webgitstats")
 @EnableAspectJAutoProxy
 public class App {
 	public static void main(String[] args) {
