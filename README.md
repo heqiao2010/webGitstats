@@ -1,4 +1,4 @@
-# webGitstats
+# 介绍
 一个可以用网页访问的gitstats工具，用于统计git提交情况。
 
 原来gitstats的工具,在linux环境下使用比较方便(其他平台安装gunplot等工具比较麻烦),需要通过手动运行gitstat脚本生成文件,比较麻烦;
