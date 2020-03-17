@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGistats</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:src="@{/js/jquery-3.1.1.min.js}">
+    <link rel="stylesheet" th:src="@{/js/bootstrap.js}">
+</head>
+<body class="container">
+    <br>
+    <h1>WebGistats  <small>一个可以用网页访问的gitstats工具</small></h1>
+    <br>
+    <div class="alert alert-danger  alert-dismissible" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        依赖gnuplot,python等组件
+    </div>
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-heading">Git仓库列表</div>
+        <table class="table table-striped">
+            <THEAD>
+                <tr>
+                    <th>项目名称</th>
+                    <th>仓库地址</th>
+                    <th>状态</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                    <th>统计</th>
+                </tr>
+            </THEAD>
+            <TBODY>
+                <tr th:each = "repo:${all}">
+                    <td th:text="${repo.name}" ></td>
+                    <td th:text="${repo.addr}" ></td>
+                    <td th:text="${repo.status}" ></td>
+                    <td ><a th:href="${'/edit/' + repo.id}">edit</a></td>
+                    <td><a th:href="${'/del/' + repo.id}">delete</a></td>
+                    <td><a th:href="${'/statis/' + repo.id}">statis</a></td>
+                </tr>
+            </TBODY>
+        </table>
+    </div>
+    <a class="btn btn-info" href="/add" role="button">新增</a>
+    <a class="btn btn-info" href="/list" role="button">刷新</a>
+</body>
+</html>
