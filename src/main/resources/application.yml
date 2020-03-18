@@ -27,8 +27,7 @@ spring:
       ddl-auto: none
   thymeleaf:
     cache: false
-    prefix: classpath:/webapp/templates/
+    prefix: classpath:/templates/
     suffix: .html
     encoding: UTF-8
     mode: HTML
-

@@ -28,6 +28,7 @@ public class IndexController {
     public String list(Model model){
         List<GitRepositoryDto> allRepoDto = gitRepoService.findAll();
         model.addAttribute("all", allRepoDto);
+        model.addAttribute("check_result", 0);
         return "index";
     }
 }

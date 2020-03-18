@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>WebGistats</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link rel="stylesheet" th:src="@{/js/jquery-3.1.1.min.js}">
-    <link rel="stylesheet" th:src="@{/js/bootstrap.js}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
 </head>
 <body class="container">
     <br>
     <h1>WebGistats  <small>一个可以用网页访问的gitstats工具</small></h1>
     <br>
-    <div class="alert alert-danger  alert-dismissible" role="alert">
+    <div th:if="${check_result eq 1}" class="alert alert-warning alert-dismissible" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
         依赖gnuplot,python等组件
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="input-group">
+                <input id="repo_input" type="text" class="form-control" placeholder="请输入Git Repo地址...">
+                <span class="input-group-btn">
+                    <button onclick="addRepo()" class="btn btn-info" type="button">添加</button>
+                </span>
+            </div>
+        </div>
     </div>
     <br>
     <div class="panel panel-default">
@@ -25,7 +34,6 @@
                     <th>项目名称</th>
                     <th>仓库地址</th>
                     <th>状态</th>
-                    <th>修改</th>
                     <th>删除</th>
                     <th>统计</th>
                 </tr>
@@ -35,14 +43,19 @@
                     <td th:text="${repo.name}" ></td>
                     <td th:text="${repo.addr}" ></td>
                     <td th:text="${repo.status}" ></td>
-                    <td ><a th:href="${'/edit/' + repo.id}">edit</a></td>
                     <td><a th:href="${'/del/' + repo.id}">delete</a></td>
                     <td><a th:href="${'/statis/' + repo.id}">statis</a></td>
                 </tr>
             </TBODY>
         </table>
     </div>
-    <a class="btn btn-info" href="/add" role="button">新增</a>
-    <a class="btn btn-info" href="/list" role="button">刷新</a>
 </body>
+<script type="text/javascript">
+    function addRepo() {
+        var repoAddrInput = $("#repo_input");
+        var addr = repoAddrInput.val();
+        alert("addRepo: " + addr);
+        repoAddrInput.val("");
+    }
+</script>
 </html>
