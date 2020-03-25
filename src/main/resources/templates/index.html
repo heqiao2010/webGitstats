@@ -11,14 +11,17 @@
     <br>
     <h1>WebGistats  <small>一个可以用网页访问的gitstats工具</small></h1>
     <br>
-    <div th:if="${check_result eq 1}" class="alert alert-warning alert-dismissible" role="alert">
+    <div id="hint-box" th:if="${errMsg} != null" class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        依赖gnuplot,python等组件
+        <span id="hint-content" th:text="${errMsg}"></span>
     </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="input-group">
-                <input id="repo_input" type="text" class="form-control" placeholder="请输入Git Repo地址...">
+                <input id="repo-input" type="text" class="form-control" placeholder="请输入Git Repo地址...">
                 <span class="input-group-btn">
                     <button onclick="addRepo()" class="btn btn-info" type="button">添加</button>
                 </span>
@@ -43,19 +46,89 @@
                     <td th:text="${repo.name}" ></td>
                     <td th:text="${repo.addr}" ></td>
                     <td th:text="${repo.status}" ></td>
-                    <td><a th:href="${'/del/' + repo.id}">delete</a></td>
-                    <td><a th:href="${'/statis/' + repo.id}">statis</a></td>
+                    <td>
+                        <a href="#" th:onclick="${'deleteRepo(' + repo.id + ')'}">Click</a>
+                    </td>
+                    <td>
+                        <a href="#" th:onclick="${'jumpStats(' + repo.id + ')'}">Jump</a>
+                    </td>
                 </tr>
             </TBODY>
         </table>
     </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="msg-box" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        提示
+                    </h4>
+                </div>
+                <div id="msg-content" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 </body>
 <script type="text/javascript">
     function addRepo() {
-        var repoAddrInput = $("#repo_input");
-        var addr = repoAddrInput.val();
-        alert("addRepo: " + addr);
-        repoAddrInput.val("");
+        var repoAddrInput = $("#repo-input");
+        var addr = repoAddrInput.val().trim();
+        $.ajax({
+            type: 'POST',
+            url: '/add/',
+            data: {'addr': addr},
+            success: function (data) {
+                console.log("data: " + data.message + " " + data.success);
+                if (data && data.success) {
+                    $("#msg-content").html("添加成功！");
+                } else {
+                    $("#msg-content").html("添加失败:" + data.message);
+                }
+                $(function () { $('#msg-box').modal('show')});
+                repoAddrInput.val("");
+            },
+            dataType: 'json'
+        });
     }
+
+    function deleteRepo(id) {
+        console.log("delete id: " + id);
+        $.ajax({
+            type: 'DELETE',
+            url: '/del/' + id,
+            success: function (data) {
+                console.log("data: " + data.message + " " + data.success);
+                if (data && data.success) {
+                    $("#msg-content").html("删除成功！");
+                } else {
+                    $("#msg-content").html("删除失败:" + data.message);
+                }
+                $(function () { $('#msg-box').modal('show')});
+            },
+            dataType: 'json'
+        });
+    }
+
+    function jumpStats(id) {
+
+    }
+
+    $('#msg-box').on('hide.bs.modal', function () {
+        $(location).attr('href', '/list');
+    })
+
+    $('#msg-box').on('hidden.bs.modal', function () {
+        $(location).attr('href', '/list');
+    })
 </script>
 </html>

@@ -1,8 +1,10 @@
 package com.github.heqiao2010.webgitstats.entity;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Tolerate;
 
 import javax.persistence.*;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "t_repository")
 public class GitRepository {
     @Id
@@ -38,4 +41,7 @@ public class GitRepository {
      * status
      */
     private int status;
+
+    @Tolerate
+    public GitRepository(){}
 }
