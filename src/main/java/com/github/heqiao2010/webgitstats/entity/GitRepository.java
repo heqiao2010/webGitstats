@@ -42,6 +42,11 @@ public class GitRepository {
      */
     private int status;
 
+    /**
+     * 创建时间
+     */
+    private long create_time;
+
     @Tolerate
     public GitRepository(){}
 }

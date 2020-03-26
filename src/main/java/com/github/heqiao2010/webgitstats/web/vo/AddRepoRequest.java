@@ -20,6 +20,7 @@ public class AddRepoRequest {
                 .dirPath(UUID.randomUUID().toString())
                 .name(getRepoNameFromAddr(getAddr()))
                 .status(StatusEnum.INIT.getStatus())
+                .create_time(System.currentTimeMillis())
                 .build();
     }
 
