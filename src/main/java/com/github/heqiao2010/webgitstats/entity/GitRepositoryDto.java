@@ -22,6 +22,11 @@ public class GitRepositoryDto {
     private String addr;
 
     /**
+     * 目录地址
+     */
+    private String dir;
+
+    /**
      * 状态
      */
     private String status;
@@ -31,6 +36,7 @@ public class GitRepositoryDto {
                 .id(gitRepository.getId())
                 .name(gitRepository.getName())
                 .addr(gitRepository.getAddr())
+                .dir(gitRepository.getDirPath())
                 .status(StatusEnum.fromStatus(gitRepository.getStatus()).getDesc())
                 .build();
     }

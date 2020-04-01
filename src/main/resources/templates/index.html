@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
     <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+    <meta http-equiv="refresh" content="5">
 </head>
 <body class="container">
     <br>
@@ -50,7 +51,8 @@
                         <a href="#" th:onclick="${'deleteRepo(' + repo.id + ')'}">Click</a>
                     </td>
                     <td>
-                        <a href="#" th:onclick="${'jumpStats(' + repo.id + ')'}">Jump</a>
+                        <a th:href="${'/stats/' + repo.dir + '/index.html'}"
+                           target="_blank" style="text-decoration:underline;">Jump</a>
                     </td>
                 </tr>
             </TBODY>
@@ -117,10 +119,6 @@
             },
             dataType: 'json'
         });
-    }
-
-    function jumpStats(id) {
-
     }
 
     $('#msg-box').on('hide.bs.modal', function () {

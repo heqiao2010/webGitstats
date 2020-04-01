@@ -4,18 +4,17 @@ import com.github.heqiao2010.webgitstats.entity.GitRepository;
 import com.github.heqiao2010.webgitstats.service.WebGitStatsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.*;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Component
 public class GitStatsRunner extends BaseRunner {
+    private static final String GITSTATS_ADDR = "https://github.com/hoxu/gitstats.git";
 
     public boolean doStats(GitRepository repo) {
         try {
@@ -23,11 +22,11 @@ public class GitStatsRunner extends BaseRunner {
             CommandLine cmdLine = new CommandLine("python");
             cmdLine.addArguments("${script} ${git-dir} ${stats-dir}");
             Map<String, String> map = new HashMap<>();
-            map.put("script", WebGitStatsUtils.getScriptPath());
-            map.put("git-dir", WebGitStatsUtils.getGitDirPath(repo));
-            map.put("stats-dir", WebGitStatsUtils.getStatsPath(repo));
+            map.put("script", WebGitStatsUtils.getScriptDirPath() + File.separator + "gitstats");
+            map.put("git-dir", WebGitStatsUtils.getGitDirPath() + File.separator + repo.getDirPath());
+            map.put("stats-dir", WebGitStatsUtils.getStatsPath() + File.separator + repo.getDirPath());
             cmdLine.setSubstitutionMap(map);
-            createDirectory(repo);
+            cloneScriptIfNeed();
             return runCommand(cmdLine);
         } catch (Exception e) {
             log.error("", e);
@@ -35,14 +34,17 @@ public class GitStatsRunner extends BaseRunner {
         }
     }
 
-    private void createDirectory(GitRepository repo) throws IOException {
-        File statsDir = new File(WebGitStatsUtils.getStatsPath(repo));
+    private void cloneScriptIfNeed() {
+        File statsDir = new File(WebGitStatsUtils.getScriptDirPath());
         if (!statsDir.exists()) {
-            if(statsDir.mkdirs()){
-                log.warn("mkdirs failed!");
-            } else {
-                log.info("mkdirs ok! {}", statsDir.getAbsolutePath());
-            }
+            log.info("{} is empty, clone gitStats...", WebGitStatsUtils.getScriptDirPath());
+            CommandLine cmdLine = new CommandLine("git");
+            cmdLine.addArguments("clone ${gitstats-addr} ${gitstats-dir}");
+            Map<String, String> map = new HashMap<>();
+            map.put("gitstats-addr", GITSTATS_ADDR);
+            map.put("gitstats-dir", WebGitStatsUtils.getScriptDirPath());
+            cmdLine.setSubstitutionMap(map);
+            runCommand(cmdLine);
         }
     }
 }

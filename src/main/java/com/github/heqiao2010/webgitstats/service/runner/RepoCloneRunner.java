@@ -8,6 +8,7 @@ import org.apache.commons.exec.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class RepoCloneRunner extends BaseRunner {
             cmdLine.addArguments("clone ${repoAddr} ${dir}", false);
             Map<String, String> map = new HashMap<>();
             map.put("repoAddr", repo.getAddr());
-            map.put("dir", WebGitStatsUtils.getGitDirPath(repo));
+            map.put("dir", WebGitStatsUtils.getGitDirPath() + File.separator + repo.getDirPath());
             cmdLine.setSubstitutionMap(map);
             return runCommand(cmdLine);
         } catch (Exception e) {

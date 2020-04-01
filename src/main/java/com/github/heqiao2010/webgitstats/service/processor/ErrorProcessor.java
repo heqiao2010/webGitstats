@@ -23,5 +23,6 @@ public class ErrorProcessor implements StatsProcessor {
         repo.setStatus(StatusEnum.ERROR.getStatus());
         context.getGitRepoRepository().save(repo);
         context.setProcessSuccess(false);
+        context.getIsProcessing().set(false);
     }
 }

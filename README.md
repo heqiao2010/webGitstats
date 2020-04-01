@@ -1,4 +1,4 @@
-# 介绍
+## 介绍
 
 ```
 --------------------------------------------------------------------------------------------------------------------
@@ -21,8 +21,25 @@
 (其他平台安装gunplot等工具比较麻烦),需要通过手动运行gitstat脚本生成文件,比较麻烦;
 webGitstats就是用于解决这个问题,提供一个web环境,用于生成统计图表,用浏览器访问.
 
-# gitstas
-gitstas是一个能够计算git仓库贡献数据的脚本程序。依赖Git，Python，Gnuplot工具分析每一次提交，然后得出一个html
-形式的分析结果。
+## 预览
+![运行结果](docs/screenshoot1.PNG)
+![运行结果](docs/screenshoot2.PNG)
 
-见：https://github.com/hoxu/gitstats
+## 如何使用
+
+依次执行：
+
+```
+git clone https://github.com/heqiao2010/webGitstats.git
+cd webGitstats
+mvn install
+mvn package
+java -jar ./target/web-gitstats.war
+```
+
+然后在浏览器中打开：http://localhost:8080
+
+## 依赖
+gitstas是一个能够计算git仓库贡献数据的脚本程序，依赖Git，Python，Gnuplot工具分析每一次提交，请再使用前先将这些工具安装在服务器上。
+
+gitstats: https://github.com/hoxu/gitstats

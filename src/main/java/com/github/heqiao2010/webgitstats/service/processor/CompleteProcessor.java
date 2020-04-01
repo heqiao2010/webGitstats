@@ -16,5 +16,6 @@ public class CompleteProcessor implements StatsProcessor {
     public void process(ProcessContext context, ProcessChain chain) {
         updateRepoStats(context);
         context.setProcessSuccess(true);
+        context.getIsProcessing().set(false);
     }
 }

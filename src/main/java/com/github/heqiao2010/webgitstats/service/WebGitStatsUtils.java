@@ -1,25 +1,24 @@
 package com.github.heqiao2010.webgitstats.service;
 
-import com.github.heqiao2010.webgitstats.entity.GitRepository;
-import org.springframework.util.ResourceUtils;
-
 import java.io.File;
-import java.io.IOException;
 
 public abstract class WebGitStatsUtils {
 
-    public static String getGitDirPath(GitRepository repo) throws IOException {
-        return ResourceUtils.getURL(ResourceUtils.CLASSPATH_URL_PREFIX).getPath()
-                + "gitfiles" + File.separator + repo.getDirPath();
+    private static final String BASE_PATH = System.getProperty("user.dir");
+
+    public static String getBasePath(){
+        return BASE_PATH + File.separator + ".webgitstats";
     }
 
-    public static String getScriptPath() throws IOException {
-        return ResourceUtils.getURL(ResourceUtils.CLASSPATH_URL_PREFIX).getPath()
-                + "gitstats" + File.separator + "gitstats";
+    public static String getGitDirPath() {
+        return getBasePath() + File.separator + "gitfiles";
     }
 
-    public static String getStatsPath(GitRepository repo) throws IOException {
-        return ResourceUtils.getURL(ResourceUtils.CLASSPATH_URL_PREFIX).getPath()
-                + "templates" + File.separator + "stats" + File.separator + repo.getDirPath();
+    public static String getScriptDirPath() {
+        return getBasePath() + File.separator + "gitstats";
+    }
+
+    public static String getStatsPath() {
+        return getBasePath() + File.separator + "templates" + File.separator + "stats";
     }
 }

@@ -24,9 +24,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class GitRepoService extends BaseRunner {
 
+    private final static String TASK_ALREADY_RUNNING = "有任务正在处理中";
+    private final static String EMPTY_DATA = "数据为空";
+
     private final GitRepoRepository gitRepoRepository;
     private final ProcessChain processChain;
     private final ExecutorService executorService;
+
+    private static ProcessContext context;
 
     @Autowired
     public GitRepoService(GitRepoRepository gitRepoRepository,
@@ -34,6 +39,14 @@ public class GitRepoService extends BaseRunner {
         this.gitRepoRepository = gitRepoRepository;
         this.processChain = processChain;
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        log.info("basePath: {}", WebGitStatsUtils.getBasePath());
+        context = ProcessContext.builder()
+                .currentStatus(StatusEnum.INIT)
+                .failedMessage(null)
+                .gitRepoRepository(gitRepoRepository)
+                .isProcessing(new AtomicBoolean(false))
+                .processSuccess(false)
+                .build();
     }
 
     public List<GitRepositoryDto> findAll(){
@@ -46,7 +59,10 @@ public class GitRepoService extends BaseRunner {
     public void addRepo(AddRepoRequest repoRequest) {
         if (null == repoRequest && StringUtils.isEmpty(repoRequest.getAddr())) {
             log.info("empty repoRequest: {}", repoRequest);
-            throw new IllegalArgumentException("empty repoRequest");
+            throw new IllegalArgumentException(EMPTY_DATA);
+        }
+        if (context.getIsProcessing().get()) {
+            throw new IllegalStateException(TASK_ALREADY_RUNNING);
         }
         GitRepository repo = repoRequest.toGitRepo();
         gitRepoRepository.save(repo);
@@ -69,7 +85,7 @@ public class GitRepoService extends BaseRunner {
         if (!checkPythonAvailable()) {
             required.add("python");
         }
-        if (!checkGnuPlotAvalilable()) {
+        if (!checkGnuPlotAvailable()) {
             required.add("gnuplot");
         }
         if (!required.isEmpty()) {
@@ -91,25 +107,22 @@ public class GitRepoService extends BaseRunner {
         return runCommand(cmdLine);
     }
 
-    private boolean checkGnuPlotAvalilable(){
+    private boolean checkGnuPlotAvailable(){
         CommandLine cmdLine = new CommandLine("gnuplot");
         cmdLine.addArguments("-V");
         return runCommand(cmdLine);
     }
 
     private void processStats(GitRepository repo){
-        ProcessContext context = ProcessContext.builder()
-                .currentStatus(StatusEnum.INIT)
-                .failedMessage(null)
-                .gitRepoRepository(gitRepoRepository)
-                .isProcessing(new AtomicBoolean(true))
-                .processSuccess(false)
-                .repo(repo)
-                .build();
+        context.setRepo(repo);
+        context.resetStatus();
+        context.getIsProcessing().set(true);
         try {
             executorService.execute(() -> processChain.doChain(context));
         } catch (Exception e) {
             log.error("error occur when processStats", e);
+        } finally {
+            context.resetStatus();
         }
     }
 }

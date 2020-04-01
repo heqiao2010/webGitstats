@@ -21,9 +21,8 @@ public class ProcessContext {
 
     private GitRepoRepository gitRepoRepository;
 
-    public void reset(GitRepository newRepo, GitRepoRepository gitRepoRepository) {
+    public void resetStatus() {
         isProcessing = new AtomicBoolean(false);
-        repo = newRepo;
         failedMessage = null;
         processSuccess = false;
         currentStatus = StatusEnum.INIT;
