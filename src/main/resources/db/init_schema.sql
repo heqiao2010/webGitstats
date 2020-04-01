@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS t_repository (
-id bigint(20) NOT NULL PRIMARY KEY,
+id bigint(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 name char(16) NOT NULL COMMENT 'name of a project',
 dir_path char(128) NOT NULL COMMENT 'relative directory path',
 addr char(256) NOT NULL COMMENT 'git address',

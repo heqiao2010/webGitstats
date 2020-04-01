@@ -1,6 +1,7 @@
 package com.github.heqiao2010.webgitstats.service.processor;
 
 import com.github.heqiao2010.webgitstats.entity.StatusEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 public class ProcessChain {
 
@@ -27,6 +29,8 @@ public class ProcessChain {
         StatsProcessor processor = processorMap.get(nextStatus);
         if(null != processor){
             processor.process(context, this);
+        } else {
+            log.warn("no processor found by status: {}", nextStatus);
         }
     }
 

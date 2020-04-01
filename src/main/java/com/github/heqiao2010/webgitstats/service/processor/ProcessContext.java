@@ -1,6 +1,9 @@
 package com.github.heqiao2010.webgitstats.service.processor;
 
+import com.github.heqiao2010.webgitstats.entity.GitRepository;
 import com.github.heqiao2010.webgitstats.entity.StatusEnum;
+import com.github.heqiao2010.webgitstats.repository.GitRepoRepository;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,16 +11,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @Setter
+@Builder
 public class ProcessContext {
     private AtomicBoolean isProcessing;
-    private Long repoId;
+    private GitRepository repo;
     private boolean processSuccess;
     private String failedMessage;
     private StatusEnum currentStatus;
 
-    public void reset() {
+    private GitRepoRepository gitRepoRepository;
+
+    public void reset(GitRepository newRepo, GitRepoRepository gitRepoRepository) {
         isProcessing = new AtomicBoolean(false);
-        repoId = 0L;
+        repo = newRepo;
         failedMessage = null;
         processSuccess = false;
         currentStatus = StatusEnum.INIT;
