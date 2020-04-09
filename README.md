@@ -17,9 +17,8 @@
 --------------------------------------------------------------------------------------------------------------------
 ```
 
-一个可以用网页访问的gitstats工具，用于统计git提交情况。原来gitstats的工具,在linux环境下使用比较方便
-(其他平台安装gunplot等工具比较麻烦),需要通过手动运行gitstat脚本生成文件,比较麻烦;
-webGitstats就是用于解决这个问题,提供一个web环境,用于生成统计图表,用浏览器访问.
+一个可以用网页访问的gitstats工具，用于统计git提交情况。原来gitstats的工具,需要通过手动运行gitstat脚本生成文件,比较麻烦;
+webGitstats提供一个web环境,用于生成统计图表,可以用浏览器直接访问.
 
 ## 预览
 ![运行结果](docs/screenshoot1.PNG)
@@ -40,6 +39,11 @@ java -jar ./target/web-gitstats.war
 然后在浏览器中打开：http://localhost:8080
 
 ## 依赖
-gitstas是一个能够计算git仓库贡献数据的脚本程序，依赖Git，Python，Gnuplot工具分析每一次提交，请再使用前先将这些工具安装在服务器上。
+目前仅支持linux，依赖Git，Python，Gnuplot;使用前请先安装依赖组件，以ubuntu为例：
 
-gitstats: https://github.com/hoxu/gitstats
+```
+sudo apt install gnuplot git python
+```
+
+## gitstas
+gitstas是一个能够计算git仓库贡献数据的脚本，详见: https://github.com/hoxu/gitstats
