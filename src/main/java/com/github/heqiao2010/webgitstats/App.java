@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  */
 @EnableAutoConfiguration
-@EnableAspectJAutoProxy
 @EnableJpaRepositories
-@EnableTransactionManagement
 @ComponentScan("com.github.heqiao2010.webgitstats")
 public class App {
 	public static void main(String[] args) {

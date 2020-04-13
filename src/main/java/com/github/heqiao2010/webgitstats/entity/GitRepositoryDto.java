@@ -32,6 +32,9 @@ public class GitRepositoryDto {
     private String status;
 
     public static GitRepositoryDto from(GitRepository gitRepository) {
+        if (null == gitRepository) {
+            return null;
+        }
         return GitRepositoryDto.builder()
                 .id(gitRepository.getId())
                 .name(gitRepository.getName())

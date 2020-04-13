@@ -10,12 +10,18 @@ import com.github.heqiao2010.webgitstats.service.runner.BaseRunner;
 import com.github.heqiao2010.webgitstats.web.vo.AddRepoRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class GitRepoService extends BaseRunner {
 
+    private final static String FIX_TIP = "未检测到%s请先安装这些组件.";
     private final static String TASK_ALREADY_RUNNING = "有任务正在处理中";
     private final static String EMPTY_DATA = "数据为空";
 
@@ -56,6 +63,13 @@ public class GitRepoService extends BaseRunner {
         return allRepoDto;
     }
 
+    public GitRepositoryDto findById(Long id) {
+        if (null == id) {
+            return null;
+        }
+        return GitRepositoryDto.from(gitRepoRepository.findOne(id));
+    }
+
     public void addRepo(AddRepoRequest repoRequest) {
         if (null == repoRequest && StringUtils.isEmpty(repoRequest.getAddr())) {
             log.info("empty repoRequest: {}", repoRequest);
@@ -69,15 +83,19 @@ public class GitRepoService extends BaseRunner {
         processStats(repo);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String dirPath) throws IOException {
         if (null == id) {
             log.info("empty id");
             throw new IllegalArgumentException("empty id");
         }
+        File gitDir = new File(WebGitStatsUtils.getGitDirPath() + File.separator + dirPath);
+        FileUtils.deleteDirectory(gitDir);
+        File statsDir = new File(WebGitStatsUtils.getStatsPath() + File.separator + dirPath);
+        FileUtils.deleteDirectory(statsDir);
         gitRepoRepository.delete(id);
     }
 
-    public String checkRequire() {
+    public Pair<Boolean, String> checkRequire() {
         List<String> required = new ArrayList<>();
         if (!checkGitAvailable()) {
             required.add("git");
@@ -89,10 +107,15 @@ public class GitRepoService extends BaseRunner {
             required.add("gnuplot");
         }
         if (!required.isEmpty()) {
-            return "未检测到" + String.join(",", required) + "，请先安装这些组件";
+            return Pair.of(false, String.format(FIX_TIP, String.join(",", required)));
         } else {
-            return null;
+            return Pair.of(true, "");
         }
+    }
+
+    public boolean isProcessing(String dirPath) {
+        return context.getIsProcessing().get()
+                && Objects.equals(context.getRepo().getDirPath(), dirPath);
     }
 
     private boolean checkGitAvailable(){
@@ -121,8 +144,6 @@ public class GitRepoService extends BaseRunner {
             executorService.execute(() -> processChain.doChain(context));
         } catch (Exception e) {
             log.error("error occur when processStats", e);
-        } finally {
-            context.resetStatus();
         }
     }
 }

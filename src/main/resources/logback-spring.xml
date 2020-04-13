@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+    <property name="LOG_BASE" value="~/.webgitstats/log" />
+    <property name="LOG_DATE_FORMAT" value="%d{yyyyMMdd}" />
+    <property name="defaultPattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level]: [%thread] - %logger{36} - %msg%n" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${defaultPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="srv" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_BASE}/srv.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_BASE}/srv.${LOG_DATE_FORMAT}.%i.log</fileNamePattern>
+
+            <!-- keep 180 days' worth of history capped at 10GB total size -->
+            <maxHistory>180</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${defaultPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.heqiao2010.webgitstats" level="info" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="srv" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="srv" />
+    </root>
+
+</configuration>

@@ -23,7 +23,7 @@ public abstract class BaseRunner {
     protected final LogOutputStream errorStream = new LogOutputStream() {
         @Override
         protected void processLine(String line, int logLevel) {
-            log.error("error:{}", line);
+            log.warn("{}", line);
         }
     };
 

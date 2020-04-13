@@ -6,6 +6,7 @@ import com.github.heqiao2010.webgitstats.web.vo.AddRepoRequest;
 import com.github.heqiao2010.webgitstats.web.vo.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,10 @@ public class IndexController {
     public String list(Model model){
         List<GitRepositoryDto> allRepoDto = gitRepoService.findAll();
         model.addAttribute("all", allRepoDto);
-        model.addAttribute("errMsg", gitRepoService.checkRequire());
+        Pair<Boolean, String> result = gitRepoService.checkRequire();
+        if (!result.getFirst()) {
+            model.addAttribute("errMsg", result.getSecond());
+        }
         return "index";
     }
 
@@ -39,6 +43,13 @@ public class IndexController {
     @ResponseBody
     public BaseResponse addRepo(AddRepoRequest request){
         log.info("request: " + request);
+        Pair<Boolean, String> result = gitRepoService.checkRequire();
+        if (!result.getFirst()) {
+            return BaseResponse.builder()
+                    .message("请先安装依赖的组件。")
+                    .success(false)
+                    .build();
+        }
         String message = "添加成功";
         boolean success = true;
         try {
@@ -61,7 +72,17 @@ public class IndexController {
         String message = "删除成功";
         boolean success = true;
         try {
-            gitRepoService.deleteById(id);
+            GitRepositoryDto repo = gitRepoService.findById(id);
+            if (null == repo) {
+                throw new IllegalArgumentException("no repo found by id " + id);
+            }
+            if (gitRepoService.isProcessing(repo.getDir())) {
+                return BaseResponse.builder()
+                        .message("任务正在处理中，请稍后再试")
+                        .success(false)
+                        .build();
+            }
+            gitRepoService.deleteById(id, repo.getDir());
         } catch (Exception e) {
             message = e.getMessage();
             success = false;
