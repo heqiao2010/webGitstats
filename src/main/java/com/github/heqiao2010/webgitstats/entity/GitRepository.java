@@ -4,6 +4,7 @@ package com.github.heqiao2010.webgitstats.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Tolerate;
 
 import javax.persistence.*;
@@ -15,8 +16,11 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "t_repository")
 public class GitRepository {
+    public static final String FILED_CREATE_TIME = "create_time";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,7 +49,8 @@ public class GitRepository {
     /**
      * 创建时间
      */
-    private long create_time;
+    @Column(name = "create_time")
+    private long createTime;
 
     @Tolerate
     public GitRepository(){}

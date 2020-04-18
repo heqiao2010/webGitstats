@@ -9,9 +9,12 @@ import com.github.heqiao2010.webgitstats.service.processor.ProcessContext;
 import com.github.heqiao2010.webgitstats.service.runner.BaseRunner;
 import com.github.heqiao2010.webgitstats.web.vo.AddRepoRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.exec.*;
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Service
 public class GitRepoService extends BaseRunner {
+    public final static Integer PAGE_SIZE = 10;
 
     private final static String FIX_TIP = "未检测到%s请先安装这些组件.";
     private final static String TASK_ALREADY_RUNNING = "有任务正在处理中";
@@ -58,7 +61,8 @@ public class GitRepoService extends BaseRunner {
 
     public List<GitRepositoryDto> findAll(){
         List<GitRepositoryDto> allRepoDto = new ArrayList<>();
-        Iterable<GitRepository> repoIterator = gitRepoRepository.findAll();
+        Pageable page = new PageRequest(0, PAGE_SIZE, Sort.Direction.DESC, GitRepository.FILED_CREATE_TIME);
+        Iterable<GitRepository> repoIterator = gitRepoRepository.findAll(page);
         repoIterator.iterator().forEachRemaining(repo -> allRepoDto.add(GitRepositoryDto.from(repo)));
         return allRepoDto;
     }
