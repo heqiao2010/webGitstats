@@ -19,7 +19,7 @@ import javax.persistence.*;
 @ToString
 @Table(name = "t_repository")
 public class GitRepository {
-    public static final String FILED_CREATE_TIME = "create_time";
+    public static final String FILED_CREATE_TIME = "createTime";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
