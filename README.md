@@ -39,7 +39,7 @@ java -jar ./target/web-gitstats.war
 然后在浏览器中打开：http://localhost:8080
 
 ## 依赖
-目前仅支持linux，依赖Git，Python，Gnuplot;使用前请先安装依赖组件，以ubuntu为例：
+目前仅支持linux和Mac，依赖Git，Python，Gnuplot;使用前请先安装依赖组件，以ubuntu为例：
 
 ```
 sudo apt install gnuplot git python
